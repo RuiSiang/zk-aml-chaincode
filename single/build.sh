@@ -23,7 +23,9 @@ echo "========= Committing chaincode definition ========="
 peer lifecycle chaincode commit -o orderer:7050 --channelID myc --name $CHAINCODE_NAME --version $VERSION --sequence $SEQUENCE --collections-config "chaincode/$CHAINCODE_NAME/collections_config.json"
 echo "========= Finished Committing chaincode definition ======="
 echo "use peer invoke to invoke transactions:"
-echo "peer chaincode invoke -o orderer:7050 -C myc -n iovcases -c \'{\"Args\":[\"init\"]}\'"
-
+echo "peer chaincode invoke -o orderer:7050 -C myc -n iovcases -c '{\"Args\":[\"init\"]}'"
+echo "========= CHAINCODE ID ========="
+echo $CC_PACKAGE_ID
+echo "Use chaincode id to start chaincode container"
 
 
