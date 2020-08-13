@@ -104,7 +104,7 @@ export class IovCases extends Contract {
             (
                 await ctx.stub.getPrivateData(
                     '_implicit_org_DEFAULT',
-                    'myConsortium1'
+                    'myConsortium'
                 )
             ).toString()
         );
