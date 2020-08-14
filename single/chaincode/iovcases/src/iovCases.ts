@@ -5,8 +5,13 @@
 import { Context, Contract } from 'fabric-contract-api';
 import { Case, File, Ledger } from './interfaces';
 
+enum consortiums {
+    Consortium1,
+    Consortium2,
+    Consortium3,
+}
 export class IovCases extends Contract {
-    public async init(ctx: Context): Promise<void> {
+    public async init(ctx: Context, Consortium: consortiums): Promise<string> {
         const datas: Ledger = {
             // keccak256 hash of string "randomfile"
             c58ef59f2c3571c9da6f7a2b54103670179460e1fe9aeaf735c4e5cfaeae621a: {
@@ -34,6 +39,7 @@ export class IovCases extends Contract {
             console.info('ID: ', key, ' has been added.');
         }
         console.info('============= END : Initialized Ledger ===========');
+        return 'Ledger initialized Success';
     }
     public async printLedger(ctx: Context): Promise<void> {
         console.info('============= START : getData ===========');
@@ -110,7 +116,6 @@ export class IovCases extends Contract {
         );
     }
 }
-
 // export class FabCar extends Contract {
 //     public async initLedger(ctx: Context) {
 //         console.info("============= START : Initialize Ledger ===========");
