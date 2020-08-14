@@ -39,6 +39,8 @@ export class IovCases extends Contract {
             console.info('ID: ', key, ' has been added.');
         }
         console.info('============= END : Initialized Ledger ===========');
+        const creater = ctx.stub.getCreator().mspid;
+        console.info('Creater: ', creater);
         return 'Ledger initialized Success';
     }
     public async printLedger(ctx: Context): Promise<void> {
