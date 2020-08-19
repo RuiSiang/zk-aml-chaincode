@@ -57,6 +57,7 @@ services:
         - /var/run/:/host/var/run/
         - ./msp/Org1MSP:/etc/hyperledger/msp
         - ./:/opt/gopath/src/chaincodedev/
+        - ./../chaincode:/opt/gopath/src/chaincodedev/chaincode
     depends_on:
       - orderer
       - org1
@@ -99,6 +100,7 @@ services:
         - /var/run/:/host/var/run/
         - ./msp/Org2MSP:/etc/hyperledger/msp
         - ./:/opt/gopath/src/chaincodedev/
+        - ./../chaincode:/opt/gopath/src/chaincodedev/chaincode
     depends_on:
       - orderer
       - org2
@@ -142,6 +144,7 @@ services:
         - /var/run/:/host/var/run/
         - ./msp/Org3MSP:/etc/hyperledger/msp
         - ./:/opt/gopath/src/chaincodedev/
+        - ./../chaincode:/opt/gopath/src/chaincodedev/chaincode
     depends_on:
       - orderer
       - org3
