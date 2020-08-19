@@ -4,14 +4,11 @@
 
 import { Context, Contract } from 'fabric-contract-api';
 import { Case, File, Ledger } from './interfaces';
+import { Consortiums, Orgs } from './constants';
+import { getConsortium } from './utils';
 
-enum consortiums {
-    Consortium1,
-    Consortium2,
-    Consortium3,
-}
 export class IovCases extends Contract {
-    public async init(ctx: Context, Consortium: consortiums): Promise<string> {
+    public async init(ctx: Context, Consortium: Consortiums): Promise<string> {
         const datas: Ledger = {
             // keccak256 hash of string "randomfile"
             c58ef59f2c3571c9da6f7a2b54103670179460e1fe9aeaf735c4e5cfaeae621a: {
@@ -115,6 +112,21 @@ export class IovCases extends Contract {
                     'myConsortium'
                 )
             ).toString()
+        );
+    }
+    public async createCase(
+        ctx: Context,
+        caseId: string,
+        caseName: string,
+        description: string,
+        privateFor: Orgs
+    ): Promise<void> {
+        console.info(
+            await ctx.stub.putPrivateData(
+                'collectionConsortium1',
+                'abc',
+                Buffer.from('123')
+            )
         );
     }
 }
