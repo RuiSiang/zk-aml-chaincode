@@ -1,8 +1,11 @@
 import { Msps, Consortiums } from './constants';
-function getConsortium(mspid: Msps): Consortiums {
+function getConsortium(mspId: string, shareMspId: string): Consortiums {
     // TODO for three org
-    if (mspid === Msps.DEFAULT) {
-        return Consortiums.Consortium1;
+    switch (mspId) {
+        case Msps.DEFAULT:
+            return Consortiums.Consortium1;
+        default:
+            throw new Error('Invalid MspId');
     }
 }
 

@@ -9,20 +9,19 @@
 //     model: string;
 //     owner: string;
 // }
+interface FileList {
+    [index: string]: boolean;
+}
 
 export interface Case {
-    caseId: string;
+    caseId?: string;
     caseName: string;
     description: string;
-    fileList: string[];
+    fileList?: FileList;
 }
 
 export interface File {
-    fileId: string;
+    fileId?: string;
     caseId: string;
     fileBase64: string;
-}
-
-export interface Ledger {
-    [index: string]: Case | File;
 }

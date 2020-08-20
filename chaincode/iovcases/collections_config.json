@@ -1,6 +1,6 @@
 [
     {
-        "name": "collectionConsortium1",
+        "name": "collectionConsortium1Case",
         "policy": "OR('DEFAULT.member')",
         "requiredPeerCount": 0,
         "maxPeerCount": 0,
@@ -8,7 +8,7 @@
         "memberOnlyRead": true
     },
     {
-        "name": "collectionConsortium2",
+        "name": "collectionConsortium1File",
         "policy": "OR('DEFAULT.member')",
         "requiredPeerCount": 0,
         "maxPeerCount": 0,
@@ -16,11 +16,35 @@
         "memberOnlyRead": true
     },
     {
-        "name": "collectionConsortium3",
+        "name": "collectionConsortium2Case",
         "policy": "OR('DEFAULT.member')",
         "requiredPeerCount": 0,
         "maxPeerCount": 0,
-        "blockToLive":0,
+        "blockToLive": 0,
         "memberOnlyRead": true
-     }
+    },
+    {
+        "name": "collectionConsortium2File",
+        "policy": "OR('DEFAULT.member')",
+        "requiredPeerCount": 0,
+        "maxPeerCount": 0,
+        "blockToLive": 0,
+        "memberOnlyRead": true
+    },
+    {
+        "name": "collectionConsortium3Case",
+        "policy": "OR('DEFAULT.member')",
+        "requiredPeerCount": 0,
+        "maxPeerCount": 0,
+        "blockToLive": 0,
+        "memberOnlyRead": true
+    },
+    {
+        "name": "collectionConsortium3File",
+        "policy": "OR('DEFAULT.member')",
+        "requiredPeerCount": 0,
+        "maxPeerCount": 0,
+        "blockToLive": 0,
+        "memberOnlyRead": true
+    }
 ]

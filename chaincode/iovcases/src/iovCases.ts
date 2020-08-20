@@ -3,14 +3,12 @@
  */
 
 import { Context, Contract } from 'fabric-contract-api';
-import { Case, File, Ledger } from './interfaces';
-import { Consortiums, Orgs } from './constants';
+import { Case, File } from './interfaces';
 import { getConsortium } from './utils';
 
 export class IovCases extends Contract {
-    public async init(ctx: Context, Consortium: Consortiums): Promise<string> {
-        const datas: Ledger = {
-            // keccak256 hash of string "randomfile"
+    public async init(ctx: Context): Promise<string> {
+        const Files = {
             c58ef59f2c3571c9da6f7a2b54103670179460e1fe9aeaf735c4e5cfaeae621a: {
                 fileId:
                     'c58ef59f2c3571c9da6f7a2b54103670179460e1fe9aeaf735c4e5cfaeae621a',
@@ -18,118 +16,288 @@ export class IovCases extends Contract {
                     '994ae0ec690e328c7a59693afc8f6f4124ca157fb4719bba7907a1f74547a2df',
                 fileBase64: 'cmFuZG9tZmlsZQ==',
             },
+        };
+        const Cases = {
+            // keccak256 hash of string "randomfile"
+
             // keccak256 hash of string "randomcase"
             '994ae0ec690e328c7a59693afc8f6f4124ca157fb4719bba7907a1f74547a2df': {
-                caseId:
-                    '994ae0ec690e328c7a59693afc8f6f4124ca157fb4719bba7907a1f74547a2df',
                 caseName: 'random',
                 description: 'case',
-                fileList: [
-                    'c58ef59f2c3571c9da6f7a2b54103670179460e1fe9aeaf735c4e5cfaeae621a',
-                ],
+                fileList: {
+                    c58ef59f2c3571c9da6f7a2b54103670179460e1fe9aeaf735c4e5cfaeae621a: true,
+                },
             },
         };
         console.info('============= START : Initialize Ledger ===========');
-        console.info(datas);
-        for (const [key, val] of Object.entries(datas)) {
-            await ctx.stub.putState(key, Buffer.from(JSON.stringify(val)));
+        console.info('Files:', Files);
+        const creater = ctx.stub.getCreator().mspid;
+        // TODO this is just dummy testing data
+        const consortium = getConsortium(creater, 'OtherOrg');
+        for (const [key, val] of Object.entries(Cases)) {
+            await ctx.stub.putPrivateData(
+                `collection${consortium}Case`,
+                key,
+                Buffer.from(JSON.stringify(val))
+            );
+            console.info('ID: ', key, ' has been added.');
+        }
+        console.info('Cases:', Cases);
+        for (const [key, val] of Object.entries(Files)) {
+            await ctx.stub.putPrivateData(
+                `collection${consortium}File`,
+                key,
+                Buffer.from(JSON.stringify(val))
+            );
             console.info('ID: ', key, ' has been added.');
         }
         console.info('============= END : Initialized Ledger ===========');
-        const creater = ctx.stub.getCreator().mspid;
         console.info('Creater: ', creater);
         return 'Ledger initialized Success';
-    }
-    public async printLedger(ctx: Context): Promise<void> {
-        console.info('============= START : getData ===========');
-        const data: Case = JSON.parse(
-            (
-                await ctx.stub.getState(
-                    '994ae0ec690e328c7a59693afc8f6f4124ca157fb4719bba7907a1f74547a2df'
-                )
-            ).toString()
-        );
-        console.info(data);
-        console.info('============= END : getData ===========');
-    }
-    public async setLedger(ctx: Context): Promise<void> {
-        console.info('============= START : setData ===========');
-
-        const data: Case = JSON.parse(
-            (
-                await ctx.stub.getState(
-                    '994ae0ec690e328c7a59693afc8f6f4124ca157fb4719bba7907a1f74547a2df'
-                )
-            ).toString()
-        );
-        console.info('old data: ', data);
-        data.description = 'changed description';
-        console.info('new data: ', data);
-        ctx.stub.putState(
-            '994ae0ec690e328c7a59693afc8f6f4124ca157fb4719bba7907a1f74547a2df',
-            Buffer.from(JSON.stringify(data))
-        );
-        console.info('============= END : setData ===========');
-    }
-    public async setPrivateData(ctx: Context): Promise<void> {
-        console.info('Set data in collectionConsortium1');
-        await ctx.stub.putPrivateData(
-            'collectionConsortium1',
-            'Data',
-            Buffer.from('private data c1')
-        );
-        console.info('Set data in collectionConsortium2');
-        await ctx.stub.putPrivateData(
-            'collectionConsortium2',
-            'Data',
-            Buffer.from('private data c2')
-        );
-        console.info('Set implicit private data');
-        await ctx.stub.putPrivateData(
-            '_implicit_org_DEFAULT',
-            'myConsortium',
-            Buffer.from('Consortium1')
-        );
-    }
-    public async printPrivateData(ctx: Context): Promise<void> {
-        console.info('Get data in collectionConsortium1');
-        console.info(
-            (
-                await ctx.stub.getPrivateData('collectionConsortium1', 'Data')
-            ).toString()
-        );
-        console.info('Get data in collectionConsortium2');
-        console.info(
-            (
-                await ctx.stub.getPrivateData('collectionConsortium2', 'Data')
-            ).toString()
-        );
-        console.info('Get implicit private data');
-        console.info(
-            (
-                await ctx.stub.getPrivateData(
-                    '_implicit_org_DEFAULT',
-                    'myConsortium'
-                )
-            ).toString()
-        );
     }
     public async createCase(
         ctx: Context,
         caseId: string,
-        caseName: string,
-        description: string,
-        privateFor: Orgs
+        privateFor: string
     ): Promise<void> {
-        console.info(
-            await ctx.stub.putPrivateData(
-                'collectionConsortium1',
-                'abc',
-                Buffer.from('123')
-            )
+        const trans: Map<string, Uint8Array> = ctx.stub.getTransient();
+        const caseName: string = trans.get('caseName').toString();
+        const description: string = trans.get('description').toString();
+        const consortium: string = getConsortium(
+            ctx.stub.getCreator().mspid,
+            privateFor
+        );
+        const newcase: Case = {
+            caseName,
+            description,
+            fileList: {},
+        };
+        await ctx.stub.putPrivateData(
+            `collection${consortium}Case`,
+            caseId,
+            Buffer.from(JSON.stringify(newcase))
+        );
+        console.info(newcase);
+    }
+    public async getCases(ctx: Context, privateFor: string): Promise<Case[]> {
+        const consortium: string = getConsortium(
+            ctx.stub.getCreator().mspid,
+            privateFor
+        );
+        // get all the data in this collection
+        const caseList: Case[] = [];
+        for await (const { key, value } of ctx.stub.getPrivateDataByRange(
+            `collection${consortium}Case`,
+            '',
+            ''
+        )) {
+            const strValue = Buffer.from(value).toString('utf8');
+            let caseObj;
+            try {
+                caseObj = JSON.parse(strValue);
+                delete caseObj.fileList;
+                caseList.push({ caseId: key, ...caseObj });
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        return caseList;
+    }
+    public async uploadFile(
+        ctx: Context,
+        caseId: string,
+        fileId: string,
+        privateFor: string
+    ): Promise<void> {
+        const fileBase64: string = ctx.stub
+            .getTransient()
+            .get('fileBase64')
+            .toString();
+        const consortium: string = getConsortium(
+            ctx.stub.getCreator().mspid,
+            privateFor
+        );
+        const caseOfFile: Case = JSON.parse(
+            (
+                await ctx.stub.getPrivateData(
+                    `collection${consortium}Case`,
+                    caseId
+                )
+            ).toString()
+        );
+        caseOfFile.fileList[fileId] = true;
+        await ctx.stub.putPrivateData(
+            `collection${consortium}Case`,
+            caseId,
+            Buffer.from(JSON.stringify(caseOfFile))
+        );
+        const uploadFile: File = {
+            caseId,
+            fileBase64,
+        };
+        await ctx.stub.putPrivateData(
+            `collection${consortium}File`,
+            fileId,
+            Buffer.from(JSON.stringify(uploadFile))
         );
     }
+    public async getFileList(
+        ctx: Context,
+        caseId: string,
+        privateFor: string
+    ): Promise<string[]> {
+        const consortium: string = getConsortium(
+            ctx.stub.getCreator().mspid,
+            privateFor
+        );
+        const caseOfFile: Case = JSON.parse(
+            (
+                await ctx.stub.getPrivateData(
+                    `collection${consortium}Case`,
+                    caseId
+                )
+            ).toString()
+        );
+        const fileIds: string[] = [];
+        for (const [fileId, exist] of Object.entries(caseOfFile.fileList)) {
+            if (exist) {
+                fileIds.push(fileId);
+            }
+        }
+        return fileIds;
+    }
+    public async deleteFile(
+        ctx: Context,
+        fileId: string,
+        privateFor: string
+    ): Promise<void> {
+        const consortium: string = getConsortium(
+            ctx.stub.getCreator().mspid,
+            privateFor
+        );
+        const fileToDelete: File = JSON.parse(
+            (
+                await ctx.stub.getPrivateData(
+                    `collection${consortium}File`,
+                    fileId
+                )
+            ).toString()
+        );
+        const caseToDeleteFile: Case = JSON.parse(
+            (
+                await ctx.stub.getPrivateData(
+                    `collection${consortium}Case`,
+                    fileToDelete.caseId
+                )
+            ).toString()
+        );
+        caseToDeleteFile.fileList[fileId] = false;
+        fileToDelete.fileBase64 = ''; // change to empty string
+        await ctx.stub.putPrivateData(
+            `collection${consortium}Case`,
+            fileToDelete.caseId,
+            Buffer.from(JSON.stringify(caseToDeleteFile))
+        );
+        await ctx.stub.putPrivateData(
+            `collection${consortium}File`,
+            fileId,
+            Buffer.from(JSON.stringify(fileToDelete))
+        );
+    }
+    public async getFile(
+        ctx: Context,
+        fileId: string,
+        privateFor: string
+    ): Promise<object> {
+        const consortium: string = getConsortium(
+            ctx.stub.getCreator().mspid,
+            privateFor
+        );
+        const fileToGet: File = JSON.parse(
+            (
+                await ctx.stub.getPrivateData(
+                    `collection${consortium}File`,
+                    fileId
+                )
+            ).toString()
+        );
+        return fileToGet;
+    }
 }
+// public async printLedger(ctx: Context): Promise<void> {
+//     console.info('============= START : getData ===========');
+//     const data: Case = JSON.parse(
+//         (
+//             await ctx.stub.getState(
+//                 '994ae0ec690e328c7a59693afc8f6f4124ca157fb4719bba7907a1f74547a2df'
+//             )
+//         ).toString()
+//     );
+//     console.info(data);
+//     console.info('============= END : getData ===========');
+// }
+// public async setLedger(ctx: Context): Promise<void> {
+//     console.info('============= START : setData ===========');
+
+//     const data: Case = JSON.parse(
+//         (
+//             await ctx.stub.getState(
+//                 '994ae0ec690e328c7a59693afc8f6f4124ca157fb4719bba7907a1f74547a2df'
+//             )
+//         ).toString()
+//     );
+//     console.info('old data: ', data);
+//     data.description = 'changed description';
+//     console.info('new data: ', data);
+//     ctx.stub.putState(
+//         '994ae0ec690e328c7a59693afc8f6f4124ca157fb4719bba7907a1f74547a2df',
+//         Buffer.from(JSON.stringify(data))
+//     );
+//     console.info('============= END : setData ===========');
+// }
+// public async setPrivateData(ctx: Context): Promise<void> {
+//     console.info('Set data in collectionConsortium1');
+//     await ctx.stub.putPrivateData(
+//         'collectionConsortium1',
+//         'Data',
+//         Buffer.from('private data c1')
+//     );
+//     console.info('Set data in collectionConsortium2');
+//     await ctx.stub.putPrivateData(
+//         'collectionConsortium2',
+//         'Data',
+//         Buffer.from('private data c2')
+//     );
+//     console.info('Set implicit private data');
+//     await ctx.stub.putPrivateData(
+//         '_implicit_org_DEFAULT',
+//         'myConsortium',
+//         Buffer.from('Consortium1')
+//     );
+// }
+// public async printPrivateData(ctx: Context): Promise<void> {
+//     console.info('Get data in collectionConsortium1');
+//     console.info(
+//         (
+//             await ctx.stub.getPrivateData('collectionConsortium1', 'Data')
+//         ).toString()
+//     );
+//     console.info('Get data in collectionConsortium2');
+//     console.info(
+//         (
+//             await ctx.stub.getPrivateData('collectionConsortium2', 'Data')
+//         ).toString()
+//     );
+//     console.info('Get implicit private data');
+//     console.info(
+//         (
+//             await ctx.stub.getPrivateData(
+//                 '_implicit_org_DEFAULT',
+//                 'myConsortium'
+//             )
+//         ).toString()
+//     );
+// }
 // export class FabCar extends Contract {
 //     public async initLedger(ctx: Context) {
 //         console.info("============= START : Initialize Ledger ===========");

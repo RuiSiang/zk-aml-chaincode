@@ -8,6 +8,7 @@ export type ConsortiumsStrings = keyof Consortiums;
 export enum Msps {
     // TODO for three org
     DEFAULT = 'DEFAULT',
+
 }
 
 export enum Orgs {
