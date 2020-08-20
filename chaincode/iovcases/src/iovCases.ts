@@ -32,11 +32,11 @@ export class IovCases extends Contract {
         console.info('============= START : Initialize Ledger ===========');
         console.info('Files:', Files);
         const creater = ctx.stub.getCreator().mspid;
-        // TODO this is just dummy testing data
-        const consortium = getConsortium(creater, 'OtherOrg');
+        // Dummy data in each org private collection for testing
+        const consortium = getConsortium(creater, creater);
         for (const [key, val] of Object.entries(Cases)) {
             await ctx.stub.putPrivateData(
-                `collection${consortium}Case`,
+                `${consortium}Case`,
                 key,
                 Buffer.from(JSON.stringify(val))
             );
@@ -45,7 +45,7 @@ export class IovCases extends Contract {
         console.info('Cases:', Cases);
         for (const [key, val] of Object.entries(Files)) {
             await ctx.stub.putPrivateData(
-                `collection${consortium}File`,
+                `${consortium}File`,
                 key,
                 Buffer.from(JSON.stringify(val))
             );
@@ -73,7 +73,7 @@ export class IovCases extends Contract {
             fileList: {},
         };
         await ctx.stub.putPrivateData(
-            `collection${consortium}Case`,
+            `${consortium}Case`,
             caseId,
             Buffer.from(JSON.stringify(newcase))
         );
@@ -87,7 +87,7 @@ export class IovCases extends Contract {
         // get all the data in this collection
         const caseList: Case[] = [];
         for await (const { key, value } of ctx.stub.getPrivateDataByRange(
-            `collection${consortium}Case`,
+            `${consortium}Case`,
             '',
             ''
         )) {
@@ -120,14 +120,14 @@ export class IovCases extends Contract {
         const caseOfFile: Case = JSON.parse(
             (
                 await ctx.stub.getPrivateData(
-                    `collection${consortium}Case`,
+                    `${consortium}Case`,
                     caseId
                 )
             ).toString()
         );
         caseOfFile.fileList[fileId] = true;
         await ctx.stub.putPrivateData(
-            `collection${consortium}Case`,
+            `${consortium}Case`,
             caseId,
             Buffer.from(JSON.stringify(caseOfFile))
         );
@@ -136,7 +136,7 @@ export class IovCases extends Contract {
             fileBase64,
         };
         await ctx.stub.putPrivateData(
-            `collection${consortium}File`,
+            `${consortium}File`,
             fileId,
             Buffer.from(JSON.stringify(uploadFile))
         );
@@ -153,7 +153,7 @@ export class IovCases extends Contract {
         const caseOfFile: Case = JSON.parse(
             (
                 await ctx.stub.getPrivateData(
-                    `collection${consortium}Case`,
+                    `${consortium}Case`,
                     caseId
                 )
             ).toString()
@@ -178,7 +178,7 @@ export class IovCases extends Contract {
         const fileToDelete: File = JSON.parse(
             (
                 await ctx.stub.getPrivateData(
-                    `collection${consortium}File`,
+                    `${consortium}File`,
                     fileId
                 )
             ).toString()
@@ -186,7 +186,7 @@ export class IovCases extends Contract {
         const caseToDeleteFile: Case = JSON.parse(
             (
                 await ctx.stub.getPrivateData(
-                    `collection${consortium}Case`,
+                    `${consortium}Case`,
                     fileToDelete.caseId
                 )
             ).toString()
@@ -194,12 +194,12 @@ export class IovCases extends Contract {
         caseToDeleteFile.fileList[fileId] = false;
         fileToDelete.fileBase64 = ''; // change to empty string
         await ctx.stub.putPrivateData(
-            `collection${consortium}Case`,
+            `${consortium}Case`,
             fileToDelete.caseId,
             Buffer.from(JSON.stringify(caseToDeleteFile))
         );
         await ctx.stub.putPrivateData(
-            `collection${consortium}File`,
+            `${consortium}File`,
             fileId,
             Buffer.from(JSON.stringify(fileToDelete))
         );
@@ -216,7 +216,7 @@ export class IovCases extends Contract {
         const fileToGet: File = JSON.parse(
             (
                 await ctx.stub.getPrivateData(
-                    `collection${consortium}File`,
+                    `${consortium}File`,
                     fileId
                 )
             ).toString()

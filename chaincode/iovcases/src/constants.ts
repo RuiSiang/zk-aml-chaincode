@@ -1,20 +1,15 @@
 export enum Consortiums {
-    Consortium1 = 'Consortium1',
-    Consortium2 = 'Consortium2',
-    Consortium3 = 'Consortium3',
+    Consortium1 = 'collectionConsortium1',
+    Consortium2 = 'collectionConsortium2',
+    Consortium3 = 'collectionConsortium3',
+    Org1Private = 'collectionOrg1Private',
+    Org2Private = 'collectionOrg2Private',
+    Org3Private = 'collectionOrg3Private',
 }
 export type ConsortiumsStrings = keyof Consortiums;
 
 export enum Msps {
-    // TODO for three org
-    DEFAULT = 'DEFAULT',
-
+    Org1MSP = 'Org1MSP',
+    Org2MSP = 'Org2MSP',
+    Org3MSP = 'Org3MSP',
 }
-
-export enum Orgs {
-    Org1 = 'Org1',
-    Org2 = 'Org2',
-    Org3 = 'Org3',
-}
-
-export type OrgsStrings = keyof Orgs;

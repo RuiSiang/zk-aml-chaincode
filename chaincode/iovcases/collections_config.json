@@ -1,7 +1,7 @@
 [
     {
         "name": "collectionConsortium1Case",
-        "policy": "OR('DEFAULT.member')",
+        "policy": "OR('Org1MSP.member','Org2MSP.member')",
         "requiredPeerCount": 0,
         "maxPeerCount": 0,
         "blockToLive": 0,
@@ -9,7 +9,7 @@
     },
     {
         "name": "collectionConsortium1File",
-        "policy": "OR('DEFAULT.member')",
+        "policy": "OR('Org1MSP.member','Org2MSP.member')",
         "requiredPeerCount": 0,
         "maxPeerCount": 0,
         "blockToLive": 0,
@@ -17,7 +17,7 @@
     },
     {
         "name": "collectionConsortium2Case",
-        "policy": "OR('DEFAULT.member')",
+        "policy": "OR('Org2MSP.member','Org3MSP.member')",
         "requiredPeerCount": 0,
         "maxPeerCount": 0,
         "blockToLive": 0,
@@ -25,7 +25,7 @@
     },
     {
         "name": "collectionConsortium2File",
-        "policy": "OR('DEFAULT.member')",
+        "policy": "OR('Org2MSP.member','Org3MSP.member')",
         "requiredPeerCount": 0,
         "maxPeerCount": 0,
         "blockToLive": 0,
@@ -33,7 +33,7 @@
     },
     {
         "name": "collectionConsortium3Case",
-        "policy": "OR('DEFAULT.member')",
+        "policy": "OR('Org1MSP.member','Org3MSP.member')",
         "requiredPeerCount": 0,
         "maxPeerCount": 0,
         "blockToLive": 0,
@@ -41,7 +41,55 @@
     },
     {
         "name": "collectionConsortium3File",
-        "policy": "OR('DEFAULT.member')",
+        "policy": "OR('Org1MSP.member','Org3MSP.member')",
+        "requiredPeerCount": 0,
+        "maxPeerCount": 0,
+        "blockToLive": 0,
+        "memberOnlyRead": true
+    },
+    {
+        "name": "collectionOrg1PrivateCase",
+        "policy": "OR('Org1MSP.member')",
+        "requiredPeerCount": 0,
+        "maxPeerCount": 0,
+        "blockToLive": 0,
+        "memberOnlyRead": true
+    },
+    {
+        "name": "collectionOrg1PrivateFile",
+        "policy": "OR('Org1MSP.member')",
+        "requiredPeerCount": 0,
+        "maxPeerCount": 0,
+        "blockToLive": 0,
+        "memberOnlyRead": true
+    },
+    {
+        "name": "collectionOrg2PrivateCase",
+        "policy": "OR('Org2MSP.member')",
+        "requiredPeerCount": 0,
+        "maxPeerCount": 0,
+        "blockToLive": 0,
+        "memberOnlyRead": true
+    },
+    {
+        "name": "collectionOrg2PrivateFile",
+        "policy": "OR('Org2MSP.member')",
+        "requiredPeerCount": 0,
+        "maxPeerCount": 0,
+        "blockToLive": 0,
+        "memberOnlyRead": true
+    },
+    {
+        "name": "collectionOrg3PrivateCase",
+        "policy": "OR('Org3MSP.member')",
+        "requiredPeerCount": 0,
+        "maxPeerCount": 0,
+        "blockToLive": 0,
+        "memberOnlyRead": true
+    },
+    {
+        "name": "collectionOrg3PrivateFile",
+        "policy": "OR('Org3MSP.member')",
         "requiredPeerCount": 0,
         "maxPeerCount": 0,
         "blockToLive": 0,
