@@ -111,7 +111,7 @@ Organizations:
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
             - Host: org2
-              Port: 7050
+              Port: 7051
     - &Org3
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
@@ -143,7 +143,7 @@ Organizations:
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
             - Host: org3
-              Port: 7050    
+              Port: 7051    
 
 ################################################################################
 #

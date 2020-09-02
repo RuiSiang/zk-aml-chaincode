@@ -7,6 +7,7 @@ services:
         environment:
             - FABRIC_LOGGING_SPEC=debug
             - ORDERER_GENERAL_LISTENADDRESS=orderer
+            - ORDERER_GENERAL_LISTENPORT=7050
             - ORDERER_GENERAL_BOOTSTRAPMETHOD=file
             - ORDERER_GENERAL_BOOTSTRAPFILE=orderer.block
             - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
@@ -20,34 +21,40 @@ services:
             - ./channel-artifacts/orderer.block:/etc/hyperledger/fabric/orderer.block
         ports:
             - 7050:7050
+        networks:
+            - default
     org1:
         container_name: org1
         image: hyperledger/fabric-peer:2.2
         environment:
             - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+            - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=iov-poc-ingress
             - CORE_PEER_ID=org1
             - CORE_PEER_ADDRESS=org1:7051
             - CORE_PEER_GOSSIP_EXTERNALENDPOINT=org1:7051
             - CORE_PEER_LOCALMSPID=Org1MSP
-            - FABRIC_LOGGING_SPEC=DEBUG
+            - FABRIC_LOGGING_SPEC=INFO
             - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp
 
         volumes:
             - /var/run/:/host/var/run/
             - ./msp/Org1MSP:/etc/hyperledger/msp
         working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
-        command: peer node start --peer-chaincodedev=true
+        command: peer node start
         ports:
             - 7051:7051
             - 7053:7053
         depends_on:
             - orderer
+        networks:
+            - default
 
     org2:
         container_name: org2
         image: hyperledger/fabric-peer:2.2
         environment:
             - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+            - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=iov-poc-ingress
             - CORE_PEER_ID=org2
             - CORE_PEER_ADDRESS=org2:7051
             - CORE_PEER_GOSSIP_EXTERNALENDPOINT=org2:7051
@@ -59,18 +66,20 @@ services:
             - /var/run/:/host/var/run/
             - ./msp/Org2MSP:/etc/hyperledger/msp
         working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
-        command: peer node start --peer-chaincodedev=true
+        command: peer node start
         ports:
             - 9051:7051
             - 9053:7053
         depends_on:
             - orderer
-
+        networks:
+            - default
     org3:
         container_name: org3
         image: hyperledger/fabric-peer:2.2
         environment:
             - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+            - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=iov-poc-ingress
             - CORE_PEER_ID=org3
             - CORE_PEER_ADDRESS=org3:7051
             - CORE_PEER_GOSSIP_EXTERNALENDPOINT=org3:7051
@@ -82,70 +91,14 @@ services:
             - /var/run/:/host/var/run/
             - ./msp/Org3MSP:/etc/hyperledger/msp
         working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
-        command: peer node start --peer-chaincodedev=true
+        command: peer node start
         ports:
             - 11051:7051
             - 11053:7053
         depends_on:
             - orderer
-
-    chaincode1:
-        container_name: chaincode1
-        image: hyperledger/fabric-nodeenv:2.2
-        tty: true
-        environment:
-            - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-            - FABRIC_LOGGING_SPEC=DEBUG
-            - CORE_PEER_ADDRESS=org1:7051
-            - CORE_PEER_LOCALMSPID=Org1MSP
-            - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp
-        working_dir: /opt/gopath/src/chaincode
-        command: /bin/sh -c 'sleep 6000000'
-        volumes:
-            - /var/run/:/host/var/run/
-            - ./msp/Org1MSP:/etc/hyperledger/msp
-            - ./../chaincode:/opt/gopath/src/chaincode
-        depends_on:
-            - orderer
-            - org1
-    chaincode2:
-        container_name: chaincode2
-        image: hyperledger/fabric-nodeenv:2.2
-        tty: true
-        environment:
-            - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-            - FABRIC_LOGGING_SPEC=DEBUG
-            - CORE_PEER_ADDRESS=org2:7051
-            - CORE_PEER_LOCALMSPID=Org2MSP
-            - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp
-        working_dir: /opt/gopath/src/chaincode
-        command: /bin/sh -c 'sleep 6000000'
-        volumes:
-            - /var/run/:/host/var/run/
-            - ./msp/Org2MSP:/etc/hyperledger/msp
-            - ./../chaincode:/opt/gopath/src/chaincode
-        depends_on:
-            - orderer
-            - org2
-    chaincode3:
-        container_name: chaincode3
-        image: hyperledger/fabric-nodeenv:2.2
-        tty: true
-        environment:
-            - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-            - FABRIC_LOGGING_SPEC=DEBUG
-            - CORE_PEER_ADDRESS=org3:7051
-            - CORE_PEER_LOCALMSPID=Org3MSP
-            - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp
-        working_dir: /opt/gopath/src/chaincode
-        command: /bin/sh -c 'sleep 6000000'
-        volumes:
-            - /var/run/:/host/var/run/
-            - ./msp/Org3MSP:/etc/hyperledger/msp
-            - ./../chaincode:/opt/gopath/src/chaincode
-        depends_on:
-            - orderer
-            - org3
+        networks:
+            - default
     cli:
         container_name: cli
         image: hyperledger/fabric-tools:2.2
@@ -163,9 +116,14 @@ services:
             - /var/run/:/host/var/run/
             - ./msp:/etc/hyperledger/msp
             - ./:/opt/gopath/src/chaincodedev/
-            - ./../chaincode:/opt/gopath/src/chaincodedev/chaincode
         depends_on:
             - orderer
             - org1
             - org2
             - org3
+        networks:
+            - default
+networks:
+    default:
+        external:
+            name: iov-poc-ingress

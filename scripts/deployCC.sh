@@ -1,6 +1,6 @@
 CHANNEL_NAME="myc"
 CC_NAME="iovcases"
-CC_SRC_PATH="../chaincode/iovcases"
+CC_SRC_PATH="../iovcases"
 CC_VERSION=${1:-"0"}
 CC_SEQUENCE=${2:-"1"}
 CC_END_POLICY="OR('Org1MSP.member','Org2MSP.member','Org3MSP.member')"
