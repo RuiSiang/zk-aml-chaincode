@@ -1,6 +1,6 @@
 CHANNEL_NAME="myc"
-CC_NAME="iovcases"
-CC_SRC_PATH="../iovcases"
+CC_NAME="aml"
+CC_SRC_PATH="../aml"
 CC_VERSION=${1:-"0"}
 CC_SEQUENCE=${2:-"1"}
 CC_END_POLICY="OR('Org1MSP.member','Org2MSP.member','Org3MSP.member')"
@@ -29,7 +29,7 @@ if [! -d "$CC_SRC_PATH" ]; then
 	echo Path to chaincode does not exist. Please provide different path
 	exit 1
 else
-	echo $'\e[0;32m'iovcases$'\e[0m' chaincode
+	echo $'\e[0;32m'aml$'\e[0m' chaincode
 fi
 
 

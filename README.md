@@ -17,5 +17,5 @@ docker exec -ti cli bash
 ### Step 3 (invoke chaincode)
 
 ```shell
-peer chaincode invoke -o orderer:7050 -C myc -n iovcases -c '{"Args":["init"]}'
+peer chaincode invoke -o orderer:7050 -C myc -n aml -c '{"Args":["init"]}'
 ```

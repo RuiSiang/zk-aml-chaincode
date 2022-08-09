@@ -1,5 +1,5 @@
 {
-    "name": "iovcases",
+    "name": "aml",
     "version": "1.0.0",
     "description": "iov poc contract implemented in TypeScript",
     "main": "dist/index.js",
