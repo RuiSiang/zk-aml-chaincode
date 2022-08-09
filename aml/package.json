@@ -1,7 +1,7 @@
 {
     "name": "aml",
     "version": "1.0.0",
-    "description": "iov poc contract implemented in TypeScript",
+    "description": "aml contract implemented in TypeScript",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "engines": {
