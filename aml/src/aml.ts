@@ -25,7 +25,7 @@ export class aml extends Contract {
     const consortium = getConsortium(creater, creater);
     for (const [key, val] of Object.entries(Entries)) {
       await ctx.stub.putPrivateData(
-        `${consortium}Case`,
+        `${consortium}Entry`,
         key,
         Buffer.from(JSON.stringify(val))
       );

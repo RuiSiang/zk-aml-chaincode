@@ -1,5 +1,12 @@
 # internet-of-vehicles-poc-chaincode
 
+## Step 0 (nodejs compile and build)
+```shell
+cd aml
+npm install
+npm run build
+```
+
 ## Step 1 (Startup the network)
 ```shell
 cd scripts
@@ -10,6 +17,7 @@ cd scripts
 
 ```shell
 docker exec -ti cli bash
+cd scripts
 ./deployCC
 ```
 

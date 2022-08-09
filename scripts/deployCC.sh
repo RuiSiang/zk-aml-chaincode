@@ -219,7 +219,7 @@ chaincodeQuery() {
 		sleep $DELAY
 		echo "Attempting to Query org${ORG} and Org2 sharing private data, Retry after $DELAY seconds."
 		set -x
-		peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"Args":["getCases","Org2"]}' >&log.txt
+		peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"Args":["getEntries","Org2"]}' >&log.txt
 		res=$?
 		set +x
 		let rc=$res
