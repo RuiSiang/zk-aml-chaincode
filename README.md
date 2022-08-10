@@ -1,4 +1,4 @@
-# internet-of-vehicles-poc-chaincode
+# zk-aml-chaincode
 
 ## Step 0 (nodejs compile and build)
 ```shell
