@@ -110,7 +110,8 @@ export class aml extends Contract {
       privateFor
     );
     const entry: Entry = JSON.parse(
-      (await ctx.stub.getPrivateData(`${consortium}Entry`, id)).toString()
+      (await ctx.stub.getPrivateData(`${consortium}Entry`, id)).toString() ||
+        '{}'
     );
     return { id, ...entry };
   }
