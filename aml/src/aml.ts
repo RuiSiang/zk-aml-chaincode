@@ -46,7 +46,7 @@ export class aml extends Contract {
     const amount: string = trans.get('amount').toString();
     const proof: string = trans.get('proof').toString();
     const consortium: string = getSendingConsortium(
-      ctx.stub.getMSPID(),
+      ctx.clientIdentity.getMSPID(),
       privateFor
     );
     const newEntry: Entry = {
@@ -64,7 +64,7 @@ export class aml extends Contract {
   }
   public async getEntries(ctx: Context): Promise<Entry[]> {
     const consortiums: string[] = getReceivingConsortium(
-      ctx.stub.getMSPID()
+      ctx.clientIdentity.getMSPID()
     );
     // get all the data in this collection
     const entryList: Entry[] = [];
