@@ -45,11 +45,12 @@ export class aml extends Contract {
     const to: string = trans.get('to').toString();
     const amount: string = trans.get('amount').toString();
     const proof: string = trans.get('proof').toString();
-    console.info('Consortium', ctx.clientIdentity.getMSPID(), privateFor)
+    console.info('Consortium for', ctx.clientIdentity.getMSPID(), privateFor);
     const consortium: string = getSendingConsortium(
       ctx.clientIdentity.getMSPID(),
       privateFor
     );
+    console.info(consortium);
     const newEntry: Entry = {
       from,
       to,
@@ -64,9 +65,11 @@ export class aml extends Contract {
     console.info(newEntry);
   }
   public async getEntries(ctx: Context): Promise<Entry[]> {
+    console.info('Consortiums for', ctx.clientIdentity.getMSPID());
     const consortiums: string[] = getReceivingConsortium(
       ctx.clientIdentity.getMSPID()
     );
+    console.info(consortiums);
     // get all the data in this collection
     const entryList: Entry[] = [];
     await Promise.all(
@@ -107,11 +110,12 @@ export class aml extends Contract {
   // }
   public async getEntry(ctx: Context, id: string): Promise<object> {
     const entries = await this.getEntries(ctx);
+    let ret = { id };
     entries.forEach((entry) => {
       if (entry.id == id) {
-        return entry;
+        ret = { id, ...entry };
       }
     });
-    return { id };
+    return ret;
   }
 }
