@@ -31,7 +31,7 @@ services:
             - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=aml-ingress
             - CORE_PEER_ID=org1
             - CORE_PEER_ADDRESS=org1:7051
-            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=org1:7051
+            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=org3:7051
             - CORE_PEER_LOCALMSPID=Org1MSP
             - FABRIC_LOGGING_SPEC=INFO
             - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp
@@ -57,7 +57,7 @@ services:
             - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=aml-ingress
             - CORE_PEER_ID=org2
             - CORE_PEER_ADDRESS=org2:7051
-            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=org2:7051
+            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=org1:7051
             - CORE_PEER_LOCALMSPID=Org2MSP
             - FABRIC_LOGGING_SPEC=DEBUG
             - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp
@@ -82,7 +82,7 @@ services:
             - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=aml-ingress
             - CORE_PEER_ID=org3
             - CORE_PEER_ADDRESS=org3:7051
-            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=org3:7051
+            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=org2:7051
             - CORE_PEER_LOCALMSPID=Org3MSP
             - FABRIC_LOGGING_SPEC=DEBUG
             - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp
