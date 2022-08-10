@@ -20,9 +20,9 @@ export class aml extends Contract {
     };
     console.info('============= START : Initialize Ledger ===========');
     console.info('Entries:', Entries);
-    const creater = ctx.stub.getCreator().mspid;
+    const creator = ctx.stub.getCreator().mspid;
     // Dummy data in each org private collection for testing
-    const consortium = getSendingConsortium(creater, creater);
+    const consortium = getSendingConsortium(creator, creator);
     for (const [key, val] of Object.entries(Entries)) {
       await ctx.stub.putPrivateData(
         `${consortium}Entry`,
@@ -32,7 +32,7 @@ export class aml extends Contract {
       console.info('ID: ', key, ' has been added.');
     }
     console.info('============= END : Initialized Ledger ===========');
-    console.info('Creater: ', creater);
+    console.info('Creator: ', creator);
     return 'Ledger initialized Success';
   }
   public async newEntry(
@@ -45,6 +45,7 @@ export class aml extends Contract {
     const to: string = trans.get('to').toString();
     const amount: string = trans.get('amount').toString();
     const proof: string = trans.get('proof').toString();
+    console.info('Consortium', ctx.clientIdentity.getMSPID(), privateFor)
     const consortium: string = getSendingConsortium(
       ctx.clientIdentity.getMSPID(),
       privateFor
