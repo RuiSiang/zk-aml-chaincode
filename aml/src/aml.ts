@@ -4,7 +4,7 @@
 
 import { Context, Contract } from 'fabric-contract-api';
 import { Entry } from './interfaces';
-import { getConsortium } from './utils';
+import { getSendingConsortium, getReceivingConsortium } from './utils';
 
 export class aml extends Contract {
   public async init(ctx: Context): Promise<string> {
@@ -22,7 +22,7 @@ export class aml extends Contract {
     console.info('Entries:', Entries);
     const creater = ctx.stub.getCreator().mspid;
     // Dummy data in each org private collection for testing
-    const consortium = getConsortium(creater, creater);
+    const consortium = getSendingConsortium(creater, creater);
     for (const [key, val] of Object.entries(Entries)) {
       await ctx.stub.putPrivateData(
         `${consortium}Entry`,
@@ -45,7 +45,7 @@ export class aml extends Contract {
     const to: string = trans.get('to').toString();
     const amount: string = trans.get('amount').toString();
     const proof: string = trans.get('proof').toString();
-    const consortium: string = getConsortium(
+    const consortium: string = getSendingConsortium(
       ctx.stub.getCreator().mspid,
       privateFor
     );
@@ -62,57 +62,55 @@ export class aml extends Contract {
     );
     console.info(newEntry);
   }
-  public async getEntries(ctx: Context, privateFor: string): Promise<Entry[]> {
-    const consortium: string = getConsortium(
-      ctx.stub.getCreator().mspid,
-      privateFor
+  public async getEntries(ctx: Context): Promise<Entry[]> {
+    const consortiums: string[] = getReceivingConsortium(
+      ctx.stub.getCreator().mspid
     );
     // get all the data in this collection
     const entryList: Entry[] = [];
-    for await (const { key, value } of ctx.stub.getPrivateDataByRange(
-      `${consortium}Entry`,
-      '',
-      ''
-    )) {
-      const strValue = Buffer.from(value).toString('utf8');
-      let entry: Entry;
-      try {
-        entry = JSON.parse(strValue);
-        entryList.push({ id: key, ...entry });
-      } catch (err) {
-        console.log(err);
-      }
-    }
+    await Promise.all(
+      consortiums.map(async (consortium) => {
+        for await (const { key, value } of ctx.stub.getPrivateDataByRange(
+          `${consortium}Entry`,
+          '',
+          ''
+        )) {
+          const strValue = Buffer.from(value).toString('utf8');
+          let entry: Entry;
+          try {
+            entry = JSON.parse(strValue);
+            entryList.push({ id: key, ...entry });
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      })
+    );
+
     return entryList;
   }
-  public async deleteEntry(
-    ctx: Context,
-    id: string,
-    privateFor: string
-  ): Promise<void> {
-    const consortium: string = getConsortium(
-      ctx.stub.getCreator().mspid,
-      privateFor
-    );
-    await ctx.stub.putPrivateData(
-      `${consortium}Entry`,
-      id,
-      Buffer.from(JSON.stringify({}))
-    );
-  }
-  public async getEntry(
-    ctx: Context,
-    id: string,
-    privateFor: string
-  ): Promise<object> {
-    const consortium: string = getConsortium(
-      ctx.stub.getCreator().mspid,
-      privateFor
-    );
-    const entry: Entry = JSON.parse(
-      (await ctx.stub.getPrivateData(`${consortium}Entry`, id)).toString() ||
-        '{}'
-    );
-    return { id, ...entry };
+  // public async deleteEntry(
+  //   ctx: Context,
+  //   id: string,
+  //   privateFor: string
+  // ): Promise<void> {
+  //   const consortium: string = getConsortium(
+  //     ctx.stub.getCreator().mspid,
+  //     privateFor
+  //   );
+  //   await ctx.stub.putPrivateData(
+  //     `${consortium}Entry`,
+  //     id,
+  //     Buffer.from(JSON.stringify({}))
+  //   );
+  // }
+  public async getEntry(ctx: Context, id: string): Promise<object> {
+    const entries = await this.getEntries(ctx);
+    entries.forEach((entry) => {
+      if (entry.id == id) {
+        return entry;
+      }
+    });
+    return { id };
   }
 }
