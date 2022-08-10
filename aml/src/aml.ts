@@ -111,6 +111,7 @@ export class aml extends Contract {
   public async getEntry(ctx: Context, id: string): Promise<object> {
     const entries = await this.getEntries(ctx);
     let ret = { id };
+    console.info(entries)
     entries.forEach((entry) => {
       if (entry.id == id) {
         ret = { id, ...entry };
