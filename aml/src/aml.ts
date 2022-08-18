@@ -3,11 +3,11 @@
  */
 
 import { Context, Contract } from 'fabric-contract-api';
-import { Entry } from './interfaces';
+import { Entry, Keypair } from './interfaces';
 import { getSendingConsortium, getReceivingConsortium } from './utils';
 
 export class aml extends Contract {
-  public async init(ctx: Context): Promise<string> {
+  public async init(ctx: Context, pk: string, vk: string): Promise<string> {
     const Entries = {
       c58ef59f2c3571c9da6f7a2b54103670179460e1fe9aeaf735c4e5cfaeae621a: {
         id: '994ae0ec690e328c7a59693afc8f6f4124ca157fb4719bba7907a1f74547a2df',
@@ -23,6 +23,10 @@ export class aml extends Contract {
     const creator = ctx.stub.getCreator().mspid;
     // Dummy data in each org private collection for testing
     const consortium = getSendingConsortium(creator, creator);
+    await ctx.stub.putState('pk', Buffer.from(pk));
+    console.info('Proving key: ', pk, ' has been initialized.');
+    await ctx.stub.putState('vk', Buffer.from(vk));
+    console.info('Verification key: ', vk, ' has been initialized.');
     for (const [key, val] of Object.entries(Entries)) {
       await ctx.stub.putPrivateData(
         `${consortium}Entry`,
@@ -34,6 +38,12 @@ export class aml extends Contract {
     console.info('============= END : Initialized Ledger ===========');
     console.info('Creator: ', creator);
     return 'Ledger initialized Success';
+  }
+  public async getKeys(ctx: Context): Promise<Keypair> {
+    return {
+      pk: Buffer.from(await ctx.stub.getState('pk')).toString('utf-8'),
+      vk: Buffer.from(await ctx.stub.getState('vk')).toString('utf-8'),
+    };
   }
   public async newEntry(
     ctx: Context,
@@ -111,7 +121,7 @@ export class aml extends Contract {
   public async getEntry(ctx: Context, id: string): Promise<object> {
     const entries = await this.getEntries(ctx);
     let ret = { id };
-    console.info(entries)
+    console.info(entries);
     entries.forEach((entry) => {
       if (entry.id == id) {
         ret = { id, ...entry };
