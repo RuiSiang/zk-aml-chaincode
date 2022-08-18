@@ -39,7 +39,7 @@ export class aml extends Contract {
     console.info('Creator: ', creator);
     return 'Ledger initialized Success';
   }
-  public async getKeys(ctx: Context): Promise<Keypair> {
+  public async getKeypair(ctx: Context): Promise<Keypair> {
     return {
       pk: Buffer.from(await ctx.stub.getState('pk')).toString('utf-8'),
       vk: Buffer.from(await ctx.stub.getState('vk')).toString('utf-8'),
