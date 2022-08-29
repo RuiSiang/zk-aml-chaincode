@@ -25,5 +25,5 @@ cd scripts
 ### Step 3 (invoke chaincode)
 
 ```shell
-peer chaincode invoke -o orderer:7050 -C myc -n aml -c '{"Args":["init", "proving-key", "verification-key"]}'
+peer chaincode invoke -o orderer:7050 -C myc -n aml -c '{"Args":["init"]}'
 ```

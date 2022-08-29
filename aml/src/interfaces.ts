@@ -9,8 +9,3 @@ export interface Entry {
   amount: string;
   proof: string;
 }
-
-export interface Keypair {
-  pk: string;
-  vk: string;
-}
